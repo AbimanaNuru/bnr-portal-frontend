@@ -8,18 +8,7 @@ import {
 } from "@/src/shared/components/EntityCardGrid/EntityCardGrid";
 import { useModalStore } from "@/src/core/store/useModalStore";
 import { useDocumentTypes } from "../hooks/useDocuments";
-
-// Dummy component for now to represent the form to create/edit Document Types
-const DocumentTypeForm = () => {
-  return (
-    <div className="p-6">
-      <h2 className="text-xl font-bold mb-4">Manage Document Type</h2>
-      <p className="text-sm text-text-secondary">
-        Form implementation to be added.
-      </p>
-    </div>
-  );
-};
+import { DocumentTypeForm } from "./DocumentTypeForm";
 
 export const DocumentTypeList: React.FC = () => {
   const { data: documentTypes, isLoading } = useDocumentTypes();
@@ -40,14 +29,18 @@ export const DocumentTypeList: React.FC = () => {
     const docType = documentTypes?.find((d) => d.id.toString() === item.id);
     if (!docType) return;
     openModal(
-      <DocumentTypeForm />,
+      <DocumentTypeForm documentType={docType} />,
       `Edit Document Type: ${docType.name}`,
       "md"
     );
   };
 
-  const handleAddClick = () => {
-    openModal(<DocumentTypeForm />, "Create Document Type", "md");
+  const handleCreateNew = () => {
+    openModal(
+      <DocumentTypeForm />,
+      "Create New Document Type",
+      "md"
+    );
   };
 
   return (
@@ -73,7 +66,7 @@ export const DocumentTypeList: React.FC = () => {
           label: "Create Document Type",
           subLabel: "Define new requirements",
           icon: FileText,
-          onClick: handleAddClick,
+          onClick: handleCreateNew,
         }}
       />
     </div>

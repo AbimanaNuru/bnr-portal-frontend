@@ -3,6 +3,7 @@ import {
   ApplicationDocumentRequirement,
   DocumentTypeDefinition,
   DocumentTypeDefinitionCreate,
+  DocumentTypeDefinitionUpdate,
   DocumentUploadResponse,
 } from "../types/document.types";
 
@@ -15,6 +16,14 @@ export const createDocumentType = async (
   data: DocumentTypeDefinitionCreate
 ): Promise<{ detail: string; id: string }> => {
   const response = await client.post("/documents/types", data);
+  return response.data;
+};
+
+export const updateDocumentType = async (
+  typeId: number,
+  data: DocumentTypeDefinitionUpdate
+): Promise<{ detail: string }> => {
+  const response = await client.put(`/documents/types/${typeId}`, data);
   return response.data;
 };
 

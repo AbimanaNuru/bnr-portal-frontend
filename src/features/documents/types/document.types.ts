@@ -4,6 +4,7 @@ export interface DocumentTypeDefinition {
   description: string;
   is_required: boolean;
   is_active: boolean;
+  workflow_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -13,6 +14,15 @@ export interface DocumentTypeDefinitionCreate {
   description: string;
   is_required?: boolean;
   is_active?: boolean;
+  workflow_id?: string | null;
+}
+
+export interface DocumentTypeDefinitionUpdate {
+  name?: string;
+  description?: string;
+  is_required?: boolean;
+  is_active?: boolean;
+  workflow_id?: string | null;
 }
 
 export interface ApplicationDocumentRequirement {

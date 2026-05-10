@@ -8,12 +8,12 @@ import {
   ClipboardList,
   FileSearch,
   FileText,
+  GitBranch,
   Landmark,
   LayoutDashboard,
-  Settings,
   ShieldCheck,
   User,
-  Users2,
+  Users2
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -49,7 +49,7 @@ const menuGroups: MenuGroup[] = [
     label: "COMPLIANCE",
     items: [
       { name: "Licensed Institutions", href: "/dashboard/institutions", icon: Landmark },
-      { name: "Audit Trail", href: "/dashboard/audit-trail", icon: ShieldCheck },
+      { name: "Audit Trail", href: "/dashboard/audit-logs", icon: ShieldCheck },
     ],
   },
   {
@@ -62,8 +62,8 @@ const menuGroups: MenuGroup[] = [
     label: "SETTINGS",
     items: [
       { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Workflows", href: "/dashboard/workflows", icon: GitBranch },
       { name: "Document Configuration", href: "/dashboard/document-configuration", icon: FileText },
-      { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ],
   },
 ];

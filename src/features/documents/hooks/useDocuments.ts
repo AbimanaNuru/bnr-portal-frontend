@@ -2,10 +2,12 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getDocumentTypes,
   createDocumentType,
+  updateDocumentType,
   getApplicationRequirements,
   uploadApplicationDocument,
   downloadDocument,
 } from "../api/document.api";
+import { DocumentTypeDefinitionUpdate } from "../types/document.types";
 
 export const useDocumentTypes = () => {
   return useQuery({
@@ -19,6 +21,23 @@ export const useCreateDocumentType = () => {
 
   return useMutation({
     mutationFn: createDocumentType,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documentTypes"] });
+    },
+  });
+};
+
+export const useUpdateDocumentType = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      typeId,
+      data,
+    }: {
+      typeId: number;
+      data: DocumentTypeDefinitionUpdate;
+    }) => updateDocumentType(typeId, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["documentTypes"] });
     },
