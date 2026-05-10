@@ -62,6 +62,7 @@ const menuGroups: MenuGroup[] = [
     label: "SETTINGS",
     items: [
       { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Document Configuration", href: "/dashboard/document-configuration", icon: FileText },
       { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ],
   },
