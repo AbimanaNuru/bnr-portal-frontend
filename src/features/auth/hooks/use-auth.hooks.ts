@@ -1,11 +1,12 @@
 import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   forgotPassword,
   login,
   resendOtp,
+  registerUser,
   resetPassword,
-  selectRole,
   verifyOtp
 } from "../api/auth.api";
 import { useAuthStore } from "../store/auth.store";
@@ -15,6 +16,7 @@ export function useLogin() {
   const setOtpRequired = useAuthStore((s) => s.setOtpRequired);
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated);
   const setStatus = useAuthStore((s) => s.setStatus);
+  const router = useRouter();
 
   return useMutation({
     mutationFn: login,
@@ -25,6 +27,7 @@ export function useLogin() {
       if (res.type === "OTP_REQUIRED") {
         toast.success("OTP required to continue");
         setOtpRequired(res.email);
+        router.push("/auth/verify-otp");
       } else if (res.type === "AUTHENTICATED") {
         toast.success("Successfully logged in!");
         setAuthenticated(res);
@@ -59,29 +62,7 @@ export function useVerifyOtp() {
   });
 }
 
-export function useSelectRole() {
-  const setAuthenticated = useAuthStore((s) => s.setAuthenticated);
-  const setStatus = useAuthStore((s) => s.setStatus);
 
-  return useMutation({
-    mutationFn: selectRole,
-    onMutate: () => {
-      setStatus("LOADING");
-    },
-    onSuccess: (res) => {
-      toast.success(`Role selected: ${res.active_role}`);
-      setAuthenticated({
-        ...res,
-        requires_role_selection: false,
-      });
-    },
-    onError: (error: any) => {
-      setStatus("ROLE_SELECTION_REQUIRED");
-      const message = error.response?.data?.detail || "Role selection failed.";
-      toast.error(message);
-    }
-  });
-}
 
 import { useProfileStore } from "../../profile/store/profile.store";
 
@@ -134,6 +115,23 @@ export function useResendOtp() {
     },
     onError: (error: any) => {
       const message = error.response?.data?.detail || "Failed to resend OTP.";
+      toast.error(message);
+    }
+  });
+}
+export function useRegister() {
+  const setOtpRequired = useAuthStore((s) => s.setOtpRequired);
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: registerUser,
+    onSuccess: (res) => {
+      toast.success(res.detail || "Account created! Please verify your email.");
+      setOtpRequired(res.email);
+      router.push("/auth/verify-otp");
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.detail || "Registration failed. Please try again.";
       toast.error(message);
     }
   });

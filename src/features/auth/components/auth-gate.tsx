@@ -46,9 +46,11 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (status === "UNAUTHENTICATED" || status === "OTP_REQUIRED" || status === "ROLE_SELECTION_REQUIRED") {
+  if (status === "UNAUTHENTICATED" || status === "OTP_REQUIRED") {
     const isPublicRoute =
       pathname === "/auth/login" ||
+      pathname === "/auth/register" ||
+      pathname === "/auth/verify-otp" ||
       pathname === "/auth/forgot-password" ||
       pathname === "/auth/reset-password" ||
       pathname === "/reset-password";

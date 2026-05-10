@@ -5,7 +5,6 @@ export const documentTypeSchema = z.object({
   description: z.string().min(5, "Description must be at least 5 characters"),
   is_required: z.boolean(),
   is_active: z.boolean(),
-  workflow_id: z.string().optional().nullable(),
 });
 
 export type DocumentTypeSchema = z.infer<typeof documentTypeSchema>;

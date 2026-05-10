@@ -1,5 +1,5 @@
 import ThemeSwitcher from "@/src/design-system/theme/ThemeSwitcher";
-import { Bell, ChevronDown, LogOut, Menu, RefreshCw, Settings, User } from "lucide-react";
+import { ChevronDown, LogOut, Menu, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -62,10 +62,7 @@ export const Topbar = () => {
           <ThemeSwitcher />
         </div>
 
-        <button className="w-8 h-8 flex items-center justify-center rounded-full border border-border bg-bg-card text-text-secondary hover:bg-bg-hover transition-colors relative">
-          <Bell className="w-4 h-4" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-primary rounded-full border-2 border-bg-card"></span>
-        </button>
+
 
         {/* User Profile Dropdown */}
         <div className="relative" ref={dropdownRef}>
@@ -107,22 +104,12 @@ export const Topbar = () => {
                 </button>
               </Link>
 
-              <button className="w-full flex items-center gap-3 px-4 py-3 text-[14px] font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-hover transition-all group">
-                <div className="w-8 h-8 rounded-lg bg-bg-hover flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                  <Settings className="w-4 h-4" />
-                </div>
-                <span>Settings</span>
-              </button>
 
-              <button className="w-full flex items-center gap-3 px-4 py-3 text-[14px] font-semibold text-text-secondary hover:text-text-primary hover:bg-bg-hover transition-all group">
-                <div className="w-8 h-8 rounded-lg bg-bg-hover flex items-center justify-center group-hover:bg-primary/10 group-hover:text-primary transition-colors">
-                  <RefreshCw className="w-4 h-4" />
-                </div>
-                <span>Switch Role</span>
-              </button>
+
+
 
               <div className="px-2 pt-1 pb-1">
-                <button 
+                <button
                   onClick={() => {
                     setIsProfileOpen(false);
                     logout();

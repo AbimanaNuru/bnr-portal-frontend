@@ -23,9 +23,7 @@ export const useAuthStore = create<AuthState>()(
 
       setAuthenticated: (data: SignInResponseWithoutOtp) =>
         set({
-          status: data.requires_role_selection
-            ? "ROLE_SELECTION_REQUIRED"
-            : "AUTHENTICATED",
+          status: "AUTHENTICATED",
           accessToken: data.access_token,
           refreshToken: data.refresh_token ?? null,
           email: data.email,

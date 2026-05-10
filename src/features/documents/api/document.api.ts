@@ -23,7 +23,7 @@ export const updateDocumentType = async (
   typeId: number,
   data: DocumentTypeDefinitionUpdate
 ): Promise<{ detail: string }> => {
-  const response = await client.put(`/documents/types/${typeId}`, data);
+  const response = await client.patch(`/documents/types/${typeId}`, data);
   return response.data;
 };
 

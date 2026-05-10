@@ -5,13 +5,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { documentTypeSchema, DocumentTypeSchema } from "../validation/document-type.schema";
 import { useCreateDocumentType, useUpdateDocumentType } from "../hooks/useDocuments";
-import { useWorkflows } from "@/src/features/workflows/hooks/useWorkflows";
 import { Button } from "@/src/design-system/components/button/Button";
 import InputTextField from "@/src/design-system/components/input/InputTextField";
-import DropdownField from "@/src/shared/components/ComboBox/ComboBox";
 import { useModalStore } from "@/src/core/store/useModalStore";
 import { toast } from "sonner";
-import { FileText, GitBranch, AlertCircle } from "lucide-react";
+import { FileText, AlertCircle } from "lucide-react";
 
 interface DocumentTypeFormProps {
   documentType?: any;
@@ -22,13 +20,10 @@ export const DocumentTypeForm: React.FC<DocumentTypeFormProps> = ({ documentType
   const { closeModal } = useModalStore();
   const createDocType = useCreateDocumentType();
   const updateDocType = useUpdateDocumentType();
-  const { data: workflows, isLoading: isLoadingWorkflows } = useWorkflows();
 
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm<DocumentTypeSchema>({
     resolver: zodResolver(documentTypeSchema),
@@ -37,11 +32,8 @@ export const DocumentTypeForm: React.FC<DocumentTypeFormProps> = ({ documentType
       description: documentType?.description || "",
       is_required: documentType?.is_required ?? false,
       is_active: documentType?.is_active ?? true,
-      workflow_id: documentType?.workflow_id || null,
     },
   });
-
-  const selectedWorkflowId = watch("workflow_id");
 
   const onSubmit = async (data: DocumentTypeSchema) => {
     try {
@@ -60,11 +52,6 @@ export const DocumentTypeForm: React.FC<DocumentTypeFormProps> = ({ documentType
       toast.error("Failed to save document type");
     }
   };
-
-  const workflowOptions = workflows?.map((w) => ({
-    label: w.name,
-    value: w.id,
-  })) || [];
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-6">
@@ -101,31 +88,18 @@ export const DocumentTypeForm: React.FC<DocumentTypeFormProps> = ({ documentType
           )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <DropdownField
-            label="Approval Workflow"
-            placeholder={isLoadingWorkflows ? "Loading workflows..." : "Select a workflow"}
-            options={workflowOptions}
-            name="workflow_id"
-            register={register}
-            value={selectedWorkflowId || ""}
-            onChange={(e) => setValue("workflow_id", e.target.value)}
-            error={errors.workflow_id?.message}
-          />
-
-          <div className="space-y-3 pt-7">
-            <div className="flex items-center gap-3 p-3 bg-bg-app rounded-xl border border-border">
-              <input
-                type="checkbox"
-                id="is_required"
-                {...register("is_required")}
-                className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
-              />
-              <label htmlFor="is_required" className="text-sm font-semibold text-text-primary cursor-pointer flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-warning" />
-                Required for Submission
-              </label>
-            </div>
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center gap-3 p-3 bg-bg-app rounded-xl border border-border">
+            <input
+              type="checkbox"
+              id="is_required"
+              {...register("is_required")}
+              className="w-5 h-5 rounded border-border text-primary focus:ring-primary"
+            />
+            <label htmlFor="is_required" className="text-sm font-semibold text-text-primary cursor-pointer flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-warning" />
+              Required for Submission
+            </label>
           </div>
         </div>
 

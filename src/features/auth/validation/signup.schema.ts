@@ -20,6 +20,11 @@ export const signupSchema = z.object({
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number"),
   confirmPassword: z.string().min(1, "Please confirm your password"),
+  institutionName: z
+    .string()
+    .min(1, "Institution name is required")
+    .min(2, "Institution name must be at least 2 characters")
+    .trim(),
   terms: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and conditions",
   }),

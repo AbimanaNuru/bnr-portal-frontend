@@ -3,10 +3,11 @@ import {
   SignInRequest, 
   AuthResponse, 
   VerifyOTPRequest, 
-  SelectRoleRequest, 
   SignInResponseWithoutOtp, 
   ForgotPasswordRequest,
-  ResetPasswordRequest
+  ResetPasswordRequest,
+  RegisterRequest,
+  RegisterResponse
 } from "../types/auth.type";
 import { GenericDetailResponse } from "@/src/core/types/detail.type";
 
@@ -30,10 +31,7 @@ export const verifyOtp = async (data: VerifyOTPRequest): Promise<SignInResponseW
   return response.data;
 };
 
-export const selectRole = async (data: SelectRoleRequest): Promise<SignInResponseWithoutOtp> => {
-  const response = await client.post("/auth/select-role", data);
-  return response.data;
-};
+
 
 
 export const resendOtp = async (data: { email: string }): Promise<{ detail: string }> => {
@@ -48,5 +46,11 @@ export const forgotPassword = async (data: ForgotPasswordRequest): Promise<Gener
 
 export const resetPassword = async (data: ResetPasswordRequest): Promise<GenericDetailResponse> => {
   const response = await client.post("/auth/reset-password", data);
+  return response.data;
+};
+export type ResetPasswordResponse = GenericDetailResponse;
+
+export const registerUser = async (data: RegisterRequest): Promise<RegisterResponse> => {
+  const response = await client.post("/auth/register", data);
   return response.data;
 };

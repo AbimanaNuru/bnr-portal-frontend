@@ -34,12 +34,6 @@ export type VerifyOTPResponse = SignInResponseWithoutOtp;
 
 
 
-export type SelectRoleRequest = {
-    role_name: string;
-}
-
-export type SelectRoleResponse = SignInResponseWithoutOtp;
-
 export type SwitchRoleRequest = {
     role_name: string;
 }
@@ -50,7 +44,6 @@ export type AuthStatus =
   | "UNAUTHENTICATED"
   | "LOADING"
   | "OTP_REQUIRED"
-  | "ROLE_SELECTION_REQUIRED"
   | "AUTHENTICATED";
 
 export type AuthResponse =
@@ -92,4 +85,16 @@ export type ResetPasswordRequest = {
     token: string;
     new_password: string;
 }
+
+export type RegisterRequest = {
+  full_name: string;
+  email: string;
+  password: string;
+  institution_name: string;
+};
+
+export type RegisterResponse = {
+  email: string;
+  detail: string;
+};
     

@@ -1,33 +1,4 @@
-export type Limit = {
-    max: number;
-    used: number;
-};
-export type Subscription = {
-    plan: string;
-    status: "active" | "expired" | "trial";
 
-    expires_at: string | null;
-
-    features: string[];
-
-    limits: {
-        units: Limit;
-        users: Limit;
-    };
-};
-export type Context = {
-    property: {
-        id: string;
-        name: string;
-    };
-
-    access: {
-        roles: string[];
-        permissions: string[];
-    };
-
-    subscription: Subscription;
-};
 
 
 export type ProfileMeResponse = {
@@ -43,16 +14,11 @@ export type ProfileMeResponse = {
         updated_at: string;
         last_login_at: string | null;
         is_two_factor_auth: boolean;
-    };
-
-    global: {
-        roles: string[];
         permissions: string[];
     };
 
-    contexts: Context[];
 
-    current_context: string | null; // nullable
+
 };
 
 

@@ -23,6 +23,21 @@ export const WorkflowList: React.FC = () => {
       countLabel: "Levels",
       icon: GitBranch,
       secondaryIcon: workflow.is_active ? ShieldCheck : HelpCircle,
+      tags: workflow.is_active
+        ? [
+            {
+              label: "Active",
+              variant: "success",
+              tooltip: "This workflow is currently active and used for all new submissions.",
+            },
+          ]
+        : [
+            {
+              label: "Inactive",
+              variant: "muted",
+              tooltip: "This workflow is inactive.",
+            },
+          ],
     })) ?? [];
 
   const handleCardClick = (item: EntityCardItem) => {
@@ -49,9 +64,13 @@ export const WorkflowList: React.FC = () => {
           <h2 className="text-xl font-bold text-text-primary">
             Approval Workflows
           </h2>
-          <p className="text-sm text-text-secondary">
-            Define multi-level approval processes for different application types.
-          </p>
+          <div className="text-sm text-text-secondary mt-1">
+            <p>Define multi-level approval processes for different application types.</p>
+            <p className="font-semibold text-amber-600 mt-1 flex items-center gap-1.5">
+              <HelpCircle className="w-4 h-4" />
+              Note: Only a single workflow must be active at any given time.
+            </p>
+          </div>
         </div>
       </div>
       <EntityCardGrid

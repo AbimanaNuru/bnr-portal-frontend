@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
-import { FileText, Settings, ShieldCheck, HelpCircle } from "lucide-react";
+import { useModalStore } from "@/src/core/store/useModalStore";
 import {
   EntityCardGrid,
   EntityCardItem,
 } from "@/src/shared/components/EntityCardGrid/EntityCardGrid";
-import { useModalStore } from "@/src/core/store/useModalStore";
+import { FileText, HelpCircle, Settings, ShieldCheck } from "lucide-react";
+import React from "react";
 import { useDocumentTypes } from "../hooks/useDocuments";
 import { DocumentTypeForm } from "./DocumentTypeForm";
 
@@ -19,10 +19,24 @@ export const DocumentTypeList: React.FC = () => {
       id: docType.id.toString(),
       name: docType.name,
       description: docType.description,
-      count: docType.is_required ? 1 : 0,
-      countLabel: docType.is_required ? "Required" : "Optional",
       icon: FileText,
       secondaryIcon: docType.is_active ? ShieldCheck : HelpCircle,
+      tags: [
+        {
+          label: docType.is_active ? "Active" : "Inactive",
+          variant: docType.is_active ? "success" : "muted",
+          tooltip: docType.is_active
+            ? "This document type is active and available."
+            : "This document type is inactive.",
+        },
+        {
+          label: docType.is_required ? "Required" : "Optional",
+          variant: docType.is_required ? "primary" : "info",
+          tooltip: docType.is_required
+            ? "This document is required for submissions."
+            : "This document is optional for submissions.",
+        },
+      ],
     })) ?? [];
 
   const handleCardClick = (item: EntityCardItem) => {

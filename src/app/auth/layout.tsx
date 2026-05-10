@@ -18,19 +18,22 @@ export default function AuthLayout({
         <div className="relative z-10 flex flex-col justify-between text-white px-12 py-16 h-full w-full max-w-xl mx-auto">
           {/* BNR Logo */}
           <div className="flex items-center gap-3">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://e-recruitment.bnr.rw/static/media/new_big_logo.7f159af4c1ebda18a7ffda2f2d952359.svg"
-              alt="National Bank of Rwanda"
-              className="h-14 w-auto object-contain brightness-0 invert"
-            />
+            <div className="bg-white px-6 py-4 rounded-2xl shadow-2xl shadow-black/10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <Image
+                src="https://e-recruitment.bnr.rw/static/media/new_big_logo.7f159af4c1ebda18a7ffda2f2d952359.svg"
+                alt="National Bank of Rwanda"
+                width={200}
+                height={60}
+                className="h-14 w-auto object-contain"
+                priority
+              />
+            </div>
           </div>
 
           {/* Headline — centred vertically */}
           <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-white/50 mb-4">
-              National Bank of Rwanda
-            </p>
+
             <h2 className="text-5xl font-extrabold tracking-tight leading-tight mb-5">
               Bank Licensing<br />&amp; Compliance<br />Portal
             </h2>

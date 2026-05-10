@@ -1,13 +1,13 @@
 "use client";
 
 import { Button, InputTextField } from "@/src/design-system";
+import { useLogin } from "@/src/features/auth/hooks/use-auth.hooks";
 import { loginSchema, type LoginFormValues } from "@/src/features/auth/validation/login.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtSign, Eye, EyeOff, Key } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useLogin } from "@/src/features/auth/hooks/use-auth.hooks";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -37,9 +37,7 @@ export default function LoginPage() {
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
       <div className="space-y-2">
-        <p className="text-xs font-bold uppercase tracking-widest text-primary">
-          National Bank of Rwanda
-        </p>
+
         <h1 className="text-3xl font-bold tracking-tight text-text-primary">
           Sign in to your account
         </h1>
@@ -114,6 +112,16 @@ export default function LoginPage() {
           Sign in
         </Button>
       </form>
+
+      <p className="text-center text-sm text-text-muted">
+        Don't have an account?{" "}
+        <Link
+          href="/auth/register"
+          className="font-semibold text-primary hover:text-primary-hover transition-colors"
+        >
+          Create an account
+        </Link>
+      </p>
 
       <p className="text-center text-xs text-text-muted border-t border-border pt-6">
         Having trouble accessing your account?{" "}

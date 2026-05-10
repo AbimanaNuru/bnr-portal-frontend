@@ -127,7 +127,11 @@ export default function ProfilePage() {
               {profile?.user?.fullname}
             </h2>
             <p className="text-primary font-semibold text-sm mt-1 bg-primary/10 px-3 py-1 rounded-full">
-              {profile?.global?.roles?.[0] || "Member"}
+              {profile?.user?.permissions?.[0]
+                ? profile.user.permissions[0]
+                    .replace(/[:_]/g, " ")
+                    .replace(/\b\w/g, (c) => c.toUpperCase())
+                : "Member"}
             </p>
 
             <div className="w-full h-px bg-border/50 my-6"></div>

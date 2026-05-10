@@ -4,6 +4,7 @@ import { Sidebar } from "@/src/shared/components/layout/Sidebar";
 import { Topbar } from "@/src/shared/components/layout/Topbar";
 import React from "react";
 import { useLayoutStore } from "@/src/core/store/useLayoutStore";
+import { useProfile } from "@/src/features/profile/hooks/use-profile.hooks";
 
 export default function DashboardLayout({
   children,
@@ -11,6 +12,10 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { isSidebarOpen, closeSidebar } = useLayoutStore();
+  
+  // Ensure profile is loaded early for permissions
+  useProfile();
+
 
   return (
     <div className="flex h-screen bg-bg-app overflow-hidden p-0 sm:p-2 gap-0 sm:gap-2 shadow-lg shadow-border/40">
