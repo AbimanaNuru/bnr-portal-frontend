@@ -18,7 +18,7 @@ export const useProfileStore = create<ProfileState>()(
       clearProfile: () => set({ profile: null }),
     }),
     {
-      name: "mavo-profile-storage",
+      name: "bnr-profile-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({ profile: state.profile }),
     }

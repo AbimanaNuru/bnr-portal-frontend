@@ -2,10 +2,10 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --color-primary: #18705E;
-  --color-primary-hover: #125A4B;
-  --color-primary-active: #0E4A3E;
-  --color-primary-soft: #E6F4F1;
+  --color-primary: #753918;
+  --color-primary-hover: #a9872b;
+  --color-primary-active: #FAEBCC;
+  --color-primary-soft: #FFE4B3;
 
   --color-accent: #F59E0B;
   --color-accent-soft: #FEF3C7;
@@ -45,25 +45,25 @@
 
 
 .dark {
-  --color-primary: #2F8F7A;
-  --color-primary-hover: #3FAF95;
-  --color-primary-active: #18705E;
-  --color-primary-soft: rgba(47, 143, 122, 0.15);
+  --color-primary: #BC8F73;
+  --color-primary-hover: #D4B29A;
+  --color-primary-active: #753918;
+  --color-primary-soft: rgba(188, 143, 115, 0.2);
 
   --color-accent: #FBBF24;
   --color-accent-soft: rgba(251, 191, 36, 0.15);
 
-  --color-text-primary: #E2E8F0;
+  --color-text-primary: #F1F5F9;
   --color-text-secondary: #94A3B8;
   --color-text-muted: #64748B;
   --color-text-inverse: #0F172A;
 
-  --color-bg-app: #0B1220;
-  --color-bg-card: #111827;
-  --color-bg-elevated: #1F2937;
+  --color-bg-app: #020617;
+  --color-bg-card: #0F172A;
+  --color-bg-elevated: #1E293B;
   --color-bg-hover: #1E293B;
 
-  --color-border: #1F2937;
+  --color-border: #1E293B;
   --color-border-strong: #334155;
 
   --color-success: #34D399;

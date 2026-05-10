@@ -3,20 +3,18 @@
 import { cn } from "@/src/core/lib/utils";
 import { useLayoutStore } from "@/src/core/store/useLayoutStore";
 import {
-  BadgeDollarSign,
   Bell,
-  Briefcase,
   ChevronLeft,
-  Home,
-  MessageSquarePlus,
+  ClipboardList,
+  FileSearch,
+  FileText,
+  Landmark,
+  LayoutDashboard,
   Settings,
-  Tag,
+  ShieldCheck,
   User,
-
-  Users,
   Users2,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -34,48 +32,43 @@ type MenuGroup = {
 
 const menuGroups: MenuGroup[] = [
   {
-    label: "PROPERTY MANAGEMENT",
+    label: "OVERVIEW",
     items: [
-      { name: "Properties", href: "/dashboard/properties", icon: Home },
-      { name: "Structure Types", href: "/dashboard/properties/structure-types", icon: Tag },
-      { name: "Inquiries", href: "/dashboard/properties-inquiries", icon: MessageSquarePlus },
-
-      { name: "Offers", href: "/dashboard/offers", icon: BadgeDollarSign },
+      { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     ],
   },
   {
-    label: "CUSTOMERS",
+    label: "LICENSING",
     items: [
-      { name: "Buyers", href: "/buyers", icon: Users },
-      { name: "Tenants", href: "/tenants", icon: Users2 },
+      { name: "Applications", href: "/dashboard/applications", icon: FileText },
+      { name: "My Applications", href: "/dashboard/my-applications", icon: ClipboardList },
+      { name: "Review Queue", href: "/dashboard/review-queue", icon: FileSearch },
     ],
   },
   {
-    label: "OPERATIONS",
+    label: "COMPLIANCE",
     items: [
-      { name: "Leases", href: "/leases", icon: Briefcase },
-      { name: "Payments", href: "/payments", icon: BadgeDollarSign },
+      { name: "Licensed Institutions", href: "/dashboard/institutions", icon: Landmark },
+      { name: "Audit Trail", href: "/dashboard/audit-trail", icon: ShieldCheck },
     ],
   },
   {
     label: "TEAM & ACCESS",
     items: [
-      { name: "Team Management", href: "/dashboard/team-management", icon: Users2 },
       { name: "Access Control", href: "/dashboard/access-control", icon: Users2 },
     ],
   },
   {
     label: "SETTINGS",
     items: [
-      { name: "Subscription", href: "/dashboard/subscription", icon: Settings },
       { name: "Profile", href: "/dashboard/profile", icon: User },
+      { name: "Settings", href: "/dashboard/settings", icon: Settings },
     ],
   },
 ];
 
 const bottomMenuItems: MenuItem[] = [
-  { name: "Notifications", href: "/notifications", icon: Bell, badge: 32 },
-  { name: "Settings", href: "/settings", icon: Settings },
+  { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
 ];
 
 export const Sidebar = () => {
@@ -83,7 +76,10 @@ export const Sidebar = () => {
   const { closeSidebar } = useLayoutStore();
 
   const renderItem = (item: MenuItem) => {
-    const isActive = pathname === item.href;
+    const isActive =
+      item.href === "/dashboard"
+        ? pathname === "/dashboard"
+        : pathname.startsWith(item.href);
 
     return (
       <Link
@@ -125,14 +121,12 @@ export const Sidebar = () => {
       {/* Logo Area */}
       <div className="flex items-center justify-between h-[70px] sm:h-[88px] px-6">
         <div className="flex items-center gap-3">
-          <Image
-            src="/MVO-white.png"
-            alt="Logo"
-            width={120}
-            height={40}
-            priority
-            style={{ height: "auto" }}
-            className="object-contain"
+          {/* BNR logo — white version via CSS invert */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="https://e-recruitment.bnr.rw/static/media/new_big_logo.7f159af4c1ebda18a7ffda2f2d952359.svg"
+            alt="National Bank of Rwanda"
+            className="h-10 w-auto object-contain brightness-0 invert"
           />
         </div>
         <button

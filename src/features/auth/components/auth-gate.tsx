@@ -2,8 +2,6 @@
 
 import AuthLayout from "@/src/app/auth/layout";
 import LoginPage from "@/src/app/auth/login/page";
-import RoleSelectionPage from "@/src/app/auth/select-role/page";
-import OtpPage from "@/src/app/auth/verify-otp/page";
 import { useAuthStore } from "@/src/features/auth/store/auth.store";
 
 import { usePathname, useRouter } from "next/navigation";
@@ -48,22 +46,17 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (status === "UNAUTHENTICATED") {
+  if (status === "UNAUTHENTICATED" || status === "OTP_REQUIRED" || status === "ROLE_SELECTION_REQUIRED") {
     const isPublicRoute =
       pathname === "/auth/login" ||
-      pathname === "/auth/signup" ||
       pathname === "/auth/forgot-password" ||
       pathname === "/auth/reset-password" ||
-      pathname === "/reset-password"; // Supporting the user's specific request
+      pathname === "/reset-password";
 
     if (isPublicRoute) return <>{children}</>;
 
     return <AuthLayout><LoginPage /></AuthLayout>;
   }
-
-  if (status === "OTP_REQUIRED") return <AuthLayout><OtpPage /></AuthLayout>;
-
-  if (status === "ROLE_SELECTION_REQUIRED") return <AuthLayout><RoleSelectionPage /></AuthLayout>;
 
   if (status === "AUTHENTICATED" && (pathname === "/" || pathname.startsWith("/auth"))) {
     return (

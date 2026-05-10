@@ -16,40 +16,39 @@ export default function AuthLayout({
         <AuthPanelDecor />
 
         <div className="relative z-10 flex flex-col justify-between text-white px-12 py-16 h-full w-full max-w-xl mx-auto">
-          {/* Logo */}
-          <div className="relative w-44 h-14">
-            <Image
-              src="/MVO-white.png"
-              alt="Mavo Services Logo"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain object-left"
+          {/* BNR Logo */}
+          <div className="flex items-center gap-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://e-recruitment.bnr.rw/static/media/new_big_logo.7f159af4c1ebda18a7ffda2f2d952359.svg"
+              alt="National Bank of Rwanda"
+              className="h-14 w-auto object-contain brightness-0 invert"
             />
           </div>
 
           {/* Headline — centred vertically */}
           <div>
             <p className="text-sm font-semibold uppercase tracking-widest text-white/50 mb-4">
-              Property Management Platform
+              National Bank of Rwanda
             </p>
             <h2 className="text-5xl font-extrabold tracking-tight leading-tight mb-5">
-              Simplify Your<br />Property<br />Management
+              Bank Licensing<br />&amp; Compliance<br />Portal
             </h2>
             <p className="text-white/65 text-base leading-relaxed max-w-sm">
-              Manage properties, tenants, and finances — all from one powerful, easy-to-use platform built for modern landlords.
+              The official portal for submitting, tracking, and managing banking licence applications — replacing manual processes with a transparent, auditable workflow.
             </p>
           </div>
 
           {/* Stat pills */}
           <div className="flex flex-col gap-4">
-            <p className="text-xs font-medium text-white/40 uppercase tracking-widest">Trusted by property managers</p>
+            <p className="text-xs font-medium text-white/40 uppercase tracking-widest">Regulatory oversight at a glance</p>
             <div className="flex items-stretch gap-3 flex-wrap">
               {[
-                { label: "Properties managed", value: "10K+" },
-                { label: "Occupancy rate", value: "94%" },
-                { label: "Active users", value: "2K+" },
+                { label: "Applications processed", value: "500+" },
+                { label: "Avg. review cycle", value: "14 days" },
+                { label: "Licensed institutions", value: "48" },
               ].map((stat) => (
-                <div key={stat.label} className="flex flex-col flex-1 min-w-[100px] rounded-2xl  border border-white/15 px-4 py-3">
+                <div key={stat.label} className="flex flex-col flex-1 min-w-[100px] rounded-2xl border border-white/15 px-4 py-3">
                   <span className="text-2xl font-bold leading-none">{stat.value}</span>
                   <span className="text-xs text-white/55 mt-1">{stat.label}</span>
                 </div>
@@ -64,13 +63,11 @@ export default function AuthLayout({
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden mb-8 flex justify-center">
-            <Image
-              src="/MVO-green.png"
-              alt="Mavo Services Logo"
-              width={120}
-              height={40}
-              style={{ height: "auto" }}
-              className="object-contain"
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://e-recruitment.bnr.rw/static/media/new_big_logo.7f159af4c1ebda18a7ffda2f2d952359.svg"
+              alt="National Bank of Rwanda"
+              className="h-12 w-auto object-contain"
             />
           </div>
           {children}

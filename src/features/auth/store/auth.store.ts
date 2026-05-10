@@ -46,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
         }),
     }),
     {
-      name: "mavo-auth-storage",
+      name: "bnr-auth-storage",
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         accessToken: state.accessToken,

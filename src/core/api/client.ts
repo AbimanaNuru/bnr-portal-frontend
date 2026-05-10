@@ -15,7 +15,7 @@ export const client = axios.create({
 
 // Interceptor for Authorization header
 client.interceptors.request.use((config) => {
-  const token = localStorage.getItem("mavo-auth-storage");
+  const token = localStorage.getItem("bnr-auth-storage");
   if (token) {
     try {
       const parsed = JSON.parse(token);

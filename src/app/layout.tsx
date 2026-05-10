@@ -8,8 +8,8 @@ const urbanist = Urbanist({
 });
 
 export const metadata: Metadata = {
-  title: "MavoServices",
-  description: "MavoServices Dashboard",
+  title: "BNR — Bank Licensing & Compliance Portal",
+  description: "National Bank of Rwanda — Bank Licensing and Compliance Portal for regulators and applicants.",
 };
 
 import { GlobalModal } from "@/src/design-system/components/modal/GlobalModal";
