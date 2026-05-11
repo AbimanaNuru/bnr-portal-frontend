@@ -5,10 +5,8 @@ import { useLayoutStore } from "@/src/core/store/useLayoutStore";
 import {
   ChevronLeft,
   ClipboardList,
-  FileSearch,
   FileText,
   GitBranch,
-  Landmark,
   LayoutDashboard,
   LogOut,
   ShieldCheck,
@@ -63,13 +61,11 @@ export const Sidebar = () => {
       items: [
         { name: "Applications", href: "/dashboard/applications", icon: FileText, permission: PERMISSIONS.APPLICATIONS_READ_ALL },
         { name: "My Applications", href: "/dashboard/my-applications", icon: ClipboardList, permission: PERMISSIONS.APPLICATIONS_READ_OWN },
-        { name: "Review Queue", href: "/dashboard/review-queue", icon: FileSearch, permission: PERMISSIONS.APPLICATION_READ },
       ],
     },
     {
       label: "COMPLIANCE",
       items: [
-        { name: "Licensed Institutions", href: "/dashboard/institutions", icon: Landmark },
         { name: "Audit Trail", href: "/dashboard/audit-logs", icon: ShieldCheck, permission: PERMISSIONS.AUDIT_READ },
       ],
     },

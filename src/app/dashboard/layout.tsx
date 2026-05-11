@@ -8,6 +8,8 @@ import { useProfile } from "@/src/features/profile/hooks/use-profile.hooks";
 import { LoadingState } from "@/src/shared/components/feedback/LoadingState";
 import { ErrorState } from "@/src/shared/components/feedback/ErrorState";
 import { useRouter } from "next/navigation";
+import { useAuthStore } from "@/src/features/auth/store/auth.store";
+import { useEffect } from "react";
 
 export default function DashboardLayout({
   children,
@@ -16,7 +18,15 @@ export default function DashboardLayout({
 }) {
   const router = useRouter();
   const { isSidebarOpen, closeSidebar } = useLayoutStore();
+  const { status, logout } = useAuthStore();
   
+  // Guard: Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === "UNAUTHENTICATED") {
+      router.push("/auth/login");
+    }
+  }, [status, router]);
+
   // Ensure profile is loaded early for permissions
   const { isLoading, isError, refetch } = useProfile();
 
@@ -31,6 +41,8 @@ export default function DashboardLayout({
           title="Session Initialization Failed"
           message="We couldn't load your profile. This might be due to an expired session or network issues."
           onRetry={() => refetch()}
+          onAction={() => logout()}
+          actionLabel="Return to Login"
         />
       </div>
     );

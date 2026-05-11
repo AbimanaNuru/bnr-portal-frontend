@@ -11,6 +11,7 @@ import {
   ChevronLeft,
   DollarSign,
   History,
+  Info,
   Loader2,
   Mail,
   MapPin,
@@ -63,7 +64,7 @@ export const ApplicationDetails: React.FC<ApplicationDetailsProps> = ({ id }) =>
 
   if (isError) {
     const isNotFound = (error as any)?.response?.status === 404;
-    
+
     if (isNotFound) {
       return (
         <EmptyState
@@ -145,6 +146,27 @@ export const ApplicationDetails: React.FC<ApplicationDetailsProps> = ({ id }) =>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* ── Left column ── */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Information Requested Alert */}
+          {application.status === ApplicationStatus.INFORMATION_REQUESTED && application.reviewer_notes && (
+            <div className="rounded-2xl border border-purple-200 bg-purple-50 p-6 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-3 opacity-10">
+                <Info className="w-12 h-12 text-purple-600" />
+              </div>
+              <h3 className="text-purple-900 font-bold text-sm mb-3 flex items-center gap-2">
+                <Info className="w-4 h-4" />
+                Additional Information Requested
+              </h3>
+              <div className="bg-white/60 rounded-xl p-4 border border-purple-100">
+                <p className="text-purple-800 text-sm leading-relaxed whitespace-pre-wrap">
+                  {application.reviewer_notes}
+                </p>
+              </div>
+              <p className="text-[11px] text-purple-600 mt-3 italic">
+                Please update the application or upload the required documents as requested above, then click "Resubmit" in the actions panel.
+              </p>
+            </div>
+          )}
+
           {/* Institution Details */}
           <SectionCard title="Institution Details" icon={<Building2 className="w-4 h-4" />}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -99,26 +99,25 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ fetchOwnOnly =
         id: "actions",
         cell: ({ row }) => (
           <div className="flex items-center justify-end gap-2">
-            {(row.original.status === ApplicationStatus.DRAFT || row.original.status === ApplicationStatus.INFORMATION_REQUESTED) && (
-              <PermissionGuard permissions={[PERMISSIONS.APPLICATION_CREATE, PERMISSIONS.APPLICATIONS_TRANSITION]}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    openModal(
-                      <div className="p-4 bg-bg-card rounded-xl max-w-lg mx-auto">
-                        <WorkflowTransitionControl application={row.original} onSuccess={closeModal} />
-                      </div>,
-                      "Application Workflow",
-                      "md"
-                    );
-                  }}
-                >
-                  <Send className="w-3.5 h-3.5 mr-1.5" />
-                  {row.original.status === ApplicationStatus.DRAFT ? "Submit" : "Resubmit"}
-                </Button>
-              </PermissionGuard>
+            {(row.original.available_actions?.includes("submit") || 
+              row.original.available_actions?.includes("resubmit")) && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openModal(
+                    <div className="p-4 bg-bg-card rounded-xl max-w-lg mx-auto">
+                      <WorkflowTransitionControl application={row.original} onSuccess={closeModal} />
+                    </div>,
+                    "Application Workflow",
+                    "md"
+                  );
+                }}
+              >
+                <Send className="w-3.5 h-3.5 mr-1.5" />
+                {row.original.available_actions?.includes("submit") ? "Submit" : "Resubmit"}
+              </Button>
             )}
             <Button
               variant="ghost"

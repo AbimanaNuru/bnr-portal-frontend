@@ -7,6 +7,8 @@ interface ErrorStateProps {
   title?: string;
   message?: string;
   onRetry?: () => void;
+  onAction?: () => void;
+  actionLabel?: string;
   className?: string;
 }
 
@@ -14,6 +16,8 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
   title = "Something went wrong",
   message = "We encountered an error while loading this data. Please try again.",
   onRetry,
+  onAction,
+  actionLabel,
   className,
 }) => {
   return (
@@ -33,6 +37,16 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
         >
           <RefreshCcw className="w-4 h-4" />
           Try Again
+        </Button>
+      )}
+
+      {onAction && actionLabel && (
+        <Button 
+          variant="ghost" 
+          onClick={onAction}
+          className={cn("text-text-secondary hover:text-text-primary", onRetry && "mt-2")}
+        >
+          {actionLabel}
         </Button>
       )}
     </div>
