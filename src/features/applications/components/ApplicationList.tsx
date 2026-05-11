@@ -20,9 +20,12 @@ import { PermissionGuard } from "@/src/features/access-control/components/Permis
 import { PERMISSIONS } from "@/src/features/access-control/permissions";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
-import { Eye, Plus, Send } from "lucide-react";
+import { Eye, Plus, Send, Search } from "lucide-react";
 import { useModalStore } from "@/src/core/store/useModalStore";
 import { WorkflowTransitionControl } from "./WorkflowTransitionControl";
+import { LoadingState } from "@/src/shared/components/feedback/LoadingState";
+import { ErrorState } from "@/src/shared/components/feedback/ErrorState";
+import { EmptyState } from "@/src/shared/components/feedback/EmptyState";
 
 const statusConfig = {
   DRAFT: { bg: "bg-gray-100", text: "text-gray-700", border: "border-gray-200", dot: "bg-gray-400" },
@@ -47,7 +50,7 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ fetchOwnOnly =
   const [searchTerm, setSearchTerm] = useState("");
   const [status] = useState<string | undefined>(undefined);
 
-  const { data, isLoading } = useApplications({
+  const { data, isLoading, isError, refetch } = useApplications({
     page,
     page_size: pageSize,
     search: searchTerm,
@@ -173,28 +176,42 @@ export const ApplicationList: React.FC<ApplicationListProps> = ({ fetchOwnOnly =
       </div>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16 bg-bg-card rounded-2xl border border-border">
-          <div className="flex flex-col items-center gap-3 text-text-secondary">
-            <svg className="w-8 h-8 animate-spin text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
-            </svg>
-            <span className="text-sm">Loading applications…</span>
-          </div>
+        <div className="bg-bg-card rounded-2xl border border-border">
+          <LoadingState message="Loading applications…" />
         </div>
-      ) : (
+      ) : isError ? (
+        <div className="bg-bg-card rounded-2xl border border-border">
+          <ErrorState 
+            message="Failed to load applications. Please check your connection." 
+            onRetry={() => refetch()} 
+          />
+        </div>
+      ) : data?.items && data.items.length > 0 ? (
         <>
           <Table table={table} onRowClick={(row) => router.push(`/dashboard/applications/${row.original.id}`)} />
-          {data && (
-            <Pagination
-              currentPage={page}
-              totalPages={data.total_pages}
-              totalCount={data.total_count}
-              page_size={pageSize}
-              onPageChange={setPage}
-            />
-          )}
+          <Pagination
+            currentPage={page}
+            totalPages={data.total_pages}
+            totalCount={data.total_count}
+            page_size={pageSize}
+            onPageChange={setPage}
+          />
         </>
+      ) : (
+        <div className="bg-bg-card rounded-2xl border border-border">
+          <EmptyState 
+            title={searchTerm ? "No applications match your search" : "No applications found"}
+            message={searchTerm 
+              ? `We couldn't find any applications matching "${searchTerm}". Try a different term.`
+              : fetchOwnOnly 
+                ? "You haven't created any applications yet."
+                : "There are no applications in the system yet."
+            }
+            icon={searchTerm ? <Search className="w-8 h-8 text-text-muted" /> : undefined}
+            actionLabel={!searchTerm && (fetchOwnOnly || !fetchOwnOnly) ? "New Application" : undefined}
+            onAction={!searchTerm ? () => router.push("/dashboard/applications/new") : undefined}
+          />
+        </div>
       )}
     </div>
   );

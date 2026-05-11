@@ -22,6 +22,9 @@ import { usePermissions } from "../../hooks/use-permissions";
 import { PERMISSIONS } from "../../permissions";
 import { InviteUserModal } from "./InviteUserModal";
 import { useReInviteUser } from "../hooks/useUsers";
+import { LoadingState } from "@/src/shared/components/feedback/LoadingState";
+import { ErrorState } from "@/src/shared/components/feedback/ErrorState";
+import { EmptyState } from "@/src/shared/components/feedback/EmptyState";
 
 export const UserTable: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -29,7 +32,7 @@ export const UserTable: React.FC = () => {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<string>("All");
 
-  const { data, isLoading } = useUsers({
+  const { data, isLoading, isError, refetch } = useUsers({
     page,
     page_size: pageSize,
     search,
@@ -246,23 +249,45 @@ export const UserTable: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative">
-        {isLoading && (
-          <div className="absolute inset-0 bg-bg-card/50 backdrop-blur-sm z-10 flex items-center justify-center rounded-xl">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      <div className="relative min-h-[400px]">
+        {isLoading ? (
+          <div className="bg-bg-card rounded-2xl border border-border">
+            <LoadingState message="Loading users…" />
+          </div>
+        ) : isError ? (
+          <div className="bg-bg-card rounded-2xl border border-border">
+            <ErrorState 
+              message="Failed to load users. Please check your connection." 
+              onRetry={() => refetch()} 
+            />
+          </div>
+        ) : data?.data && data.data.length > 0 ? (
+          <>
+            <Table table={table} />
+            <div className="flex items-center justify-end border-t border-border/50 pt-6">
+              <TablePagination
+                totalCount={data?.total || 0}
+                currentPage={page}
+                page_size={pageSize}
+                totalPages={data?.total_pages || 1}
+                onPageChange={setPage}
+              />
+            </div>
+          </>
+        ) : (
+          <div className="bg-bg-card rounded-2xl border border-border">
+            <EmptyState 
+              title={search ? "No users match your search" : "No users found"}
+              message={search 
+                ? `We couldn't find any users matching "${search}".`
+                : "There are no users registered in the system yet."
+              }
+              icon={<Shield className="w-8 h-8 text-text-muted" />}
+              actionLabel={!search && hasPermission(PERMISSIONS.USERS_CREATE) ? "Invite User" : undefined}
+              onAction={!search ? handleInviteUser : undefined}
+            />
           </div>
         )}
-        <Table table={table} />
-      </div>
-
-      <div className="flex items-center justify-end border-t border-border/50 pt-6">
-        <TablePagination
-          totalCount={data?.total || 0}
-          currentPage={page}
-          page_size={pageSize}
-          totalPages={data?.total_pages || 1}
-          onPageChange={setPage}
-        />
       </div>
     </div>
   );

@@ -30,6 +30,7 @@ export interface ApplicationDocumentRequirement {
   is_required_snapshot: boolean;
   is_satisfied: boolean;
   satisfied_at?: string;
+  latest_document_id?: number;
   document_type?: DocumentTypeDefinition;
 }
 

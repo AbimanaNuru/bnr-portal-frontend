@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BNR Licensing & Compliance Portal
+
+A robust, enterprise-grade regulatory platform designed for the Bank of National Reserve (BNR). This portal streamlines the licensing process for financial institutions, ensuring rigorous compliance and transparent auditability.
+
+## Key Features
+
+- **Secure Authentication**: Multi-factor authentication (MFA) and OTP-based verification for enhanced security.
+- **Role-Based Access Control (RBAC)**: Granular permissions management ensuring users only access authorized data and workflows.
+- **Application Lifecycle Management**: End-to-end tracking of license applications, from draft to final approval.
+- **Document Management**: Centralized repository for regulatory documents with versioning and size validation.
+- **Workflow Automation**: Multi-stage approval processes with real-time status tracking.
+- **Comprehensive Auditing**: Detailed logs of all system activities for regulatory compliance and transparency.
+- **Premium UI/UX**: Modern, responsive dashboard built with a custom design system for institutional excellence.
+
+## Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **State Management**: Zustand, TanStack Query
+- **Form Handling**: React Hook Form, Zod
+- **Icons**: Lucide React
+- **Styling**: Vanilla CSS with Tailwind CSS utilities
 
 ## Getting Started
 
-First, run the development server:
+### Development Credentials
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+For testing and review purposes, you can use the following pre-seeded accounts:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Email | Password | Role |
+| :--- | :--- | :--- |
+| `applicant@bnr-dev.rw` | `applicant123` | APPLICANT |
+| `reviewer@bnr-dev.rw` | `reviewer123` | REVIEWER |
+| `approver@bnr-dev.rw` | `approver123` | APPROVER |
+| `admin@bnr-dev.rw` | `admin123` | ADMIN |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Node.js 18.x or higher
+- npm, yarn, or pnpm
 
-## Learn More
+### Installation
 
-To learn more about Next.js, take a look at the following resources:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/AbimanaNuru/bnr-portal-frontend.git
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3. Configure environment variables:
+   Create a `.env` file in the root directory and add the necessary configuration (see `.env.example`).
 
-## Deploy on Vercel
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. Build for production:
+   ```bash
+   npm run build
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture
+
+The project follows a feature-based modular architecture:
+
+- `src/app`: Next.js App Router pages and layouts.
+- `src/features`: Business logic, components, and API integration grouped by domain (e.g., auth, applications, documents).
+- `src/shared`: Reusable components, hooks, and utilities used across multiple features.
+- `src/design-system`: Core UI components and theme tokens.
+- `src/core`: Global configuration, API clients, and foundational types.
+
+## Compliance & Security
+
+This portal is built with a "security-first" mindset, implementing:
+- JWT-based session management with secure storage.
+- Strict input validation using Zod schemas.
+- Content Security Policy (CSP) and other security headers.
+- Full audit traceability for all sensitive operations.

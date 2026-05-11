@@ -1,29 +1,30 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  createColumnHelper,
-  getPaginationRowModel
-} from "@tanstack/react-table";
-import {
-  ClipboardList,
-  Search,
-  Filter as FilterIcon,
-  Eye,
-  User,
-  Activity,
-  Calendar,
-  Shield
-} from "lucide-react";
-import { useAuditLogs } from "../hooks/useAuditLogs";
-import { AuditLog } from "../types/audit-log.types";
+import { useModalStore } from "@/src/core/store/useModalStore";
+import SearchBar from "@/src/design-system/components/TableComponent/SearchBar";
 import Table from "@/src/design-system/components/TableComponent/Table";
 import TablePagination from "@/src/design-system/components/TableComponent/TablePagination";
-import SearchBar from "@/src/design-system/components/TableComponent/SearchBar";
 import { StatusBadge } from "@/src/design-system/components/badge";
-import { useModalStore } from "@/src/core/store/useModalStore";
+import { EmptyState } from "@/src/shared/components/feedback/EmptyState";
+import { ErrorState } from "@/src/shared/components/feedback/ErrorState";
+import { LoadingState } from "@/src/shared/components/feedback/LoadingState";
+import {
+  createColumnHelper,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable
+} from "@tanstack/react-table";
+import {
+  Activity,
+  Calendar,
+  ClipboardList,
+  Eye,
+  Shield,
+  User
+} from "lucide-react";
+import React, { useMemo, useState } from "react";
+import { useAuditLogs } from "../hooks/useAuditLogs";
+import { AuditLog } from "../types/audit-log.types";
 
 const columnHelper = createColumnHelper<AuditLog>();
 
@@ -157,7 +158,7 @@ export const AuditLogList: React.FC = () => {
   const [search, setSearch] = useState("");
   const { openModal } = useModalStore();
 
-  const { data, isLoading } = useAuditLogs({
+  const { data, isLoading, isError, refetch } = useAuditLogs({
     page,
     search,
     page_size: 10,
@@ -265,26 +266,45 @@ export const AuditLogList: React.FC = () => {
           />
         </div>
 
-        <Table
-          table={table}
-          onRowClick={(row) => {
-            openModal(
-              <AuditLogDetailView logId={row.original.id} />,
-              "Audit Log Detail",
-              "lg"
-            );
-          }}
-        />
-
-        <div className="mt-6">
-          <TablePagination
-            currentPage={page}
-            totalPages={data?.total_pages ?? 1}
-            onPageChange={setPage}
-            page_size={10}
-            totalCount={data?.total_count ?? 0}
+        {isLoading ? (
+          <LoadingState message="Loading audit trail…" />
+        ) : isError ? (
+          <ErrorState
+            message="Failed to load audit logs. Please check your connection."
+            onRetry={() => refetch()}
           />
-        </div>
+        ) : data?.items && data.items.length > 0 ? (
+          <>
+            <Table
+              table={table}
+              onRowClick={(row) => {
+                openModal(
+                  <AuditLogDetailView logId={row.original.id} />,
+                  "Audit Log Detail",
+                  "lg"
+                );
+              }}
+            />
+            <div className="mt-6">
+              <TablePagination
+                currentPage={page}
+                totalPages={data?.total_pages ?? 1}
+                onPageChange={setPage}
+                page_size={10}
+                totalCount={data?.total_count ?? 0}
+              />
+            </div>
+          </>
+        ) : (
+          <EmptyState
+            title={search ? "No logs match your search" : "No logs found"}
+            message={search
+              ? `We couldn't find any audit logs matching "${search}".`
+              : "The system audit trail is currently empty."
+            }
+            icon={<ClipboardList className="w-8 h-8 text-text-muted" />}
+          />
+        )}
       </div>
     </div>
   );

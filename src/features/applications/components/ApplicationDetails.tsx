@@ -25,6 +25,9 @@ import { DocumentManager } from "../../documents/components/DocumentManager";
 import { useApplication } from "../hooks/useApplications";
 import { ApplicationStatus } from "../types/application.types";
 import { WorkflowTransitionControl } from "./WorkflowTransitionControl";
+import { LoadingState } from "@/src/shared/components/feedback/LoadingState";
+import { ErrorState } from "@/src/shared/components/feedback/ErrorState";
+import { EmptyState } from "@/src/shared/components/feedback/EmptyState";
 
 interface ApplicationDetailsProps {
   id: string;
@@ -42,7 +45,7 @@ const statusConfig = {
 
 export const ApplicationDetails: React.FC<ApplicationDetailsProps> = ({ id }) => {
   const router = useRouter();
-  const { data: application, isLoading } = useApplication(id);
+  const { data: application, isLoading, isError, error, refetch } = useApplication(id);
 
   // Keep the browser tab title in sync with the application name
   useEffect(() => {
@@ -55,29 +58,41 @@ export const ApplicationDetails: React.FC<ApplicationDetailsProps> = ({ id }) =>
   }, [application?.title]);
 
   if (isLoading) {
+    return <LoadingState message="Fetching application details…" />;
+  }
+
+  if (isError) {
+    const isNotFound = (error as any)?.response?.status === 404;
+    
+    if (isNotFound) {
+      return (
+        <EmptyState
+          title="Application Not Found"
+          message="The application you are looking for does not exist or you do not have permission to view it."
+          icon={<Building2 className="w-8 h-8 text-text-muted" />}
+          actionLabel="Back to Applications"
+          onAction={() => router.push("/dashboard/applications")}
+        />
+      );
+    }
+
     return (
-      <div className="flex flex-col items-center justify-center h-64 gap-3 text-text-secondary">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-        <p className="text-sm">Loading application…</p>
-      </div>
+      <ErrorState
+        title="Error Loading Application"
+        message="We encountered a problem while retrieving the application details. Please try again."
+        onRetry={() => refetch()}
+      />
     );
   }
 
   if (!application) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center gap-3">
-        <div className="w-16 h-16 rounded-2xl bg-bg-app border border-border flex items-center justify-center">
-          <Building2 className="w-7 h-7 text-text-muted" />
-        </div>
-        <p className="font-semibold text-text-primary">Application not found</p>
-        <p className="text-sm text-text-secondary">
-          This application may have been removed or you may not have access.
-        </p>
-        <Button variant="outline" onClick={() => router.back()} className="mt-2">
-          <ChevronLeft className="w-4 h-4 mr-1" />
-          Go Back
-        </Button>
-      </div>
+      <EmptyState
+        title="No Data Available"
+        message="We couldn't retrieve the details for this application."
+        actionLabel="Back to Applications"
+        onAction={() => router.push("/dashboard/applications")}
+      />
     );
   }
 

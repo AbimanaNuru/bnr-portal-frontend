@@ -5,6 +5,7 @@ import {
   DocumentTypeDefinitionCreate,
   DocumentTypeDefinitionUpdate,
   DocumentUploadResponse,
+  Document,
 } from "../types/document.types";
 
 export const getDocumentTypes = async (): Promise<DocumentTypeDefinition[]> => {
@@ -70,5 +71,12 @@ export const downloadDocument = async (
       responseType: "blob",
     }
   );
+  return response.data;
+};
+
+export const getApplicationDocuments = async (
+  applicationId: string
+): Promise<Document[]> => {
+  const response = await client.get(`/documents/applications/${applicationId}`);
   return response.data;
 };

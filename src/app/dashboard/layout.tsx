@@ -5,17 +5,36 @@ import { Topbar } from "@/src/shared/components/layout/Topbar";
 import React from "react";
 import { useLayoutStore } from "@/src/core/store/useLayoutStore";
 import { useProfile } from "@/src/features/profile/hooks/use-profile.hooks";
+import { LoadingState } from "@/src/shared/components/feedback/LoadingState";
+import { ErrorState } from "@/src/shared/components/feedback/ErrorState";
+import { useRouter } from "next/navigation";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
   const { isSidebarOpen, closeSidebar } = useLayoutStore();
   
   // Ensure profile is loaded early for permissions
-  useProfile();
+  const { isLoading, isError, refetch } = useProfile();
 
+  if (isLoading) {
+    return <LoadingState fullPage message="Authenticating and loading profile…" />;
+  }
+
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-bg-app flex items-center justify-center p-6">
+        <ErrorState 
+          title="Session Initialization Failed"
+          message="We couldn't load your profile. This might be due to an expired session or network issues."
+          onRetry={() => refetch()}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-bg-app overflow-hidden p-0 sm:p-2 gap-0 sm:gap-2 shadow-lg shadow-border/40">

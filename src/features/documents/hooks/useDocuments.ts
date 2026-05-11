@@ -6,6 +6,7 @@ import {
   getApplicationRequirements,
   uploadApplicationDocument,
   downloadDocument,
+  getApplicationDocuments,
 } from "../api/document.api";
 import { DocumentTypeDefinitionUpdate } from "../types/document.types";
 
@@ -69,6 +70,9 @@ export const useUploadApplicationDocument = () => {
       queryClient.invalidateQueries({
         queryKey: ["applicationRequirements", variables.applicationId],
       });
+      queryClient.invalidateQueries({
+        queryKey: ["applicationDocuments", variables.applicationId],
+      });
     },
   });
 };
@@ -82,5 +86,12 @@ export const useDownloadDocument = () => {
       documentId: number;
       applicationId: string;
     }) => downloadDocument(documentId, applicationId),
+  });
+};
+export const useApplicationDocuments = (applicationId: string) => {
+  return useQuery({
+    queryKey: ["applicationDocuments", applicationId],
+    queryFn: () => getApplicationDocuments(applicationId),
+    enabled: !!applicationId,
   });
 };

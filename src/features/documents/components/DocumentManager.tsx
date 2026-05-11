@@ -17,9 +17,13 @@ import {
   AlertCircle,
   Download,
   Loader2,
+  History,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
+import { useApplicationDocuments } from "../hooks/useDocuments";
 
 interface DocumentManagerProps {
   applicationId: string;
@@ -30,10 +34,14 @@ const requiredBadgeConfig = {
 };
 
 export const DocumentManager: React.FC<DocumentManagerProps> = ({ applicationId }) => {
-  const { data: requirements, isLoading } = useApplicationRequirements(applicationId);
+  const { data: requirements, isLoading: reqsLoading } = useApplicationRequirements(applicationId);
+  const { data: allDocuments, isLoading: docsLoading } = useApplicationDocuments(applicationId);
   const uploadMutation = useUploadApplicationDocument();
   const downloadMutation = useDownloadDocument();
   const [uploadingId, setUploadingId] = useState<number | null>(null);
+  const [showHistoryFor, setShowHistoryFor] = useState<number | null>(null);
+
+  const isLoading = reqsLoading || docsLoading;
 
   const handleUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -87,10 +95,10 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({ applicationId 
 
       <div className="grid gap-3">
         {requirements?.map((req) => (
-          <div
-            key={req.id}
-            className="flex items-center justify-between p-4 bg-bg-card rounded-xl border border-border shadow-sm"
-          >
+          <React.Fragment key={req.id}>
+            <div
+              className="flex items-center justify-between p-4 bg-bg-card rounded-xl border border-border shadow-sm"
+            >
             {/* Left: status icon + info */}
             <div className="flex items-start gap-3 min-w-0">
               {req.is_satisfied ? (
@@ -126,13 +134,25 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({ applicationId 
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => handleDownload(req.id, req.name_snapshot)}
-                    disabled={downloadMutation.isPending}
+                    onClick={() => handleDownload(req.latest_document_id!, req.name_snapshot)}
+                    disabled={downloadMutation.isPending || !req.latest_document_id}
                   >
                     <Download className="w-4 h-4 mr-1.5" />
                     Download
                   </Button>
                 </PermissionGuard>
+              )}
+
+              {/* History Toggle */}
+              {req.is_satisfied && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowHistoryFor(showHistoryFor === req.id ? null : req.id)}
+                  className="px-2"
+                >
+                  {showHistoryFor === req.id ? <ChevronUp className="w-4 h-4" /> : <History className="w-4 h-4" />}
+                </Button>
               )}
 
               {/* Upload — requires write-level permission */}
@@ -173,8 +193,40 @@ export const DocumentManager: React.FC<DocumentManagerProps> = ({ applicationId 
               </PermissionGuard>
             </div>
           </div>
-        ))}
 
+          {/* History Section */}
+          {showHistoryFor === req.id && (
+            <div className="mt-2 ml-8 p-3 bg-bg-app rounded-lg border border-border animate-in slide-in-from-top-1">
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-2">Version History</div>
+              <div className="space-y-2">
+                {allDocuments
+                  ?.filter((d) => d.document_type_id === req.document_type_id)
+                  .map((doc) => (
+                    <div key={doc.id} className="flex items-center justify-between text-sm py-1 border-b border-border/50 last:border-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded font-mono ${doc.is_latest ? 'bg-emerald-100 text-emerald-700' : 'bg-bg-hover text-text-secondary'}`}>
+                          V{doc.version_number}
+                        </span>
+                        <span className="text-text-primary truncate max-w-[200px]">{doc.original_filename}</span>
+                        <span className="text-[10px] text-text-muted">({(doc.file_size_bytes / 1024 / 1024).toFixed(2)} MB)</span>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className="text-[10px] text-text-muted">{format(new Date(doc.uploaded_at), "MMM dd, HH:mm")}</span>
+                        <button 
+                          onClick={() => handleDownload(doc.id, doc.original_filename)}
+                          className="text-primary hover:text-primary-hover p-1"
+                          title="Download this version"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          )}
+          </React.Fragment>
+        ))}
         {requirements?.length === 0 && (
           <div className="text-center py-8 text-text-secondary bg-bg-app rounded-xl border border-dashed border-border">
             No document requirements defined for this application.
