@@ -21,6 +21,12 @@ export const PERMISSIONS = {
   APPLICATIONS_READ_ALL: "applications:read_all",
   APPLICATIONS_TRANSITION: "applications:transition",
   APPLICATIONS_SUBMIT: "applications:submit",
+  APPLICATIONS_RESUBMIT: "applications:resubmit",
+  APPLICATIONS_START_REVIEW: "applications:start_review",
+  APPLICATIONS_COMPLETE_REVIEW: "applications:complete_review",
+  APPLICATIONS_REQUEST_INFO: "applications:request_info",
+  APPLICATIONS_APPROVE: "applications:approve",
+  APPLICATIONS_REJECT: "applications:reject",
 
   // Users & Roles
   USERS_READ: "users:read",

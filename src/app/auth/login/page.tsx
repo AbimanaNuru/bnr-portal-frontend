@@ -93,12 +93,6 @@ export default function LoginPage() {
               Remember for 30 days
             </label>
           </div>
-          <Link
-            href="/auth/forgot-password"
-            className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
-          >
-            Forgot password?
-          </Link>
         </div>
 
         <Button
@@ -123,15 +117,7 @@ export default function LoginPage() {
         </Link>
       </p>
 
-      <p className="text-center text-xs text-text-muted border-t border-border pt-6">
-        Having trouble accessing your account?{" "}
-        <a
-          href="mailto:support@bnr.rw"
-          className="font-semibold text-primary hover:text-primary-hover transition-colors"
-        >
-          Contact BNR support
-        </a>
-      </p>
+
     </div>
   );
 }

@@ -376,28 +376,28 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 border border-border rounded-xl bg-bg-app/50 transition-opacity ${toggle2FAMutation.isPending ? 'opacity-60 pointer-events-none' : ''}`}>
-                  <div>
-                    <h4 className="font-bold text-text-primary text-[14px]">Email Authentication</h4>
-                    <p className="text-text-secondary text-[12px] mt-1 max-w-sm">
-                      Secure your account by requiring an OTP sent to {profile?.user?.email}.
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 border border-amber-200/50 rounded-2xl bg-amber-500/[0.03] relative overflow-hidden group">
+                  <div className="absolute top-0 right-0 p-3 opacity-[0.03] group-hover:opacity-[0.05] transition-opacity">
+                    <Shield className="w-24 h-24 text-amber-600" />
+                  </div>
+
+                  <div className="relative z-10">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h4 className="font-bold text-text-primary text-[15px]">Multi-Factor Authentication</h4>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-black uppercase tracking-wider border border-amber-200">
+                        Coming in v2
+                      </span>
+                    </div>
+                    <p className="text-text-secondary text-[13px] max-w-md leading-relaxed">
+                      Advanced security features including SMS and Authenticator app support are currently in development.
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    {toggle2FAMutation.isPending && (
-                      <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
-                    )}
-                    <label className="relative inline-flex items-center cursor-pointer shrink-0">
-                      <input
-                        type="checkbox"
-                        className="sr-only peer"
-                        checked={profile?.user?.is_two_factor_auth || false}
-                        onChange={(e) => toggle2FAMutation.mutate({ enable: e.target.checked })}
-                        disabled={toggle2FAMutation.isPending}
-                      />
-                      <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary shadow-inner"></div>
-                    </label>
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="flex items-center gap-2 px-4 py-2 bg-bg-card border border-border rounded-xl shadow-sm opacity-60 grayscale cursor-not-allowed">
+                      <Lock className="w-3.5 h-3.5 text-text-muted" />
+                      <span className="text-xs font-bold text-text-muted">Disabled</span>
+                    </div>
                   </div>
                 </div>
               </div>

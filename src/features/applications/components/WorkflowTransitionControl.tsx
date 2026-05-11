@@ -12,7 +12,9 @@ import { PermissionGuard } from "@/src/features/access-control/components/Permis
 import { PERMISSIONS } from "@/src/features/access-control/permissions";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2, Send, CheckCircle, XCircle, Info, AlertCircle, Play, ClipboardCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useProfile } from "../../profile/hooks/use-profile.hooks";
+import { Loader2, Send, CheckCircle, XCircle, Info, AlertCircle, Play, ClipboardCheck, Pencil } from "lucide-react";
 import { ApplicationStatus, Application } from "../types/application.types";
 
 interface WorkflowTransitionControlProps {
@@ -24,6 +26,8 @@ export const WorkflowTransitionControl: React.FC<WorkflowTransitionControlProps>
   application,
   onSuccess,
 }) => {
+  const router = useRouter();
+  const { profile } = useProfile();
   const { mutateAsync: transition, isPending: isTransitioning } = useTransitionApplication();
   const { mutateAsync: submitApp, isPending: isSubmitting } = useSubmitApplication();
   
@@ -38,7 +42,7 @@ export const WorkflowTransitionControl: React.FC<WorkflowTransitionControlProps>
   const handleTransition = async (data: { notes: string }) => {
     if (!selectedAction) return;
     try {
-      if (selectedAction === "SUBMIT") {
+      if (selectedAction === "submit") {
         await submitApp({ id: application.id, notes: data.notes });
       } else {
         await transition({
@@ -65,26 +69,32 @@ export const WorkflowTransitionControl: React.FC<WorkflowTransitionControlProps>
     setShowNotes(true);
   };
 
-  /** Determine which action buttons are visible based on status + permissions. */
+  /** Determine which action buttons are visible based on the backend's computed available_actions. */
   const renderActions = () => {
-    switch (application.status) {
-      case ApplicationStatus.DRAFT:
-        return (
-          // Applicants need APPLICATION_CREATE permission to submit their own draft
-          <PermissionGuard
-            permissions={[PERMISSIONS.APPLICATION_CREATE, PERMISSIONS.APPLICATIONS_TRANSITION]}
-            fallback={
-              <p className="text-sm text-text-secondary italic text-center">
-                You do not have permission to submit this application.
-              </p>
-            }
-          >
+    if (!application.available_actions || application.available_actions.length === 0) {
+      if (application.status === ApplicationStatus.APPROVED) {
+        return <p className="text-sm text-emerald-600 font-medium text-center">Application has been approved.</p>;
+      }
+      if (application.status === ApplicationStatus.REJECTED) {
+        return <p className="text-sm text-red-600 font-medium text-center">Application has been rejected.</p>;
+      }
+      return (
+        <p className="text-sm text-text-secondary text-center italic">
+          No actions available for you at this stage.
+        </p>
+      );
+    }
+
+    return (
+      <div className="grid grid-cols-1 gap-2">
+        {application.available_actions.includes("submit") && (
+          <div className="space-y-3">
             {isChecking ? (
               <div className="flex items-center justify-center py-4">
                 <Loader2 className="w-5 h-5 animate-spin text-primary" />
               </div>
             ) : checkData?.ready_to_submit ? (
-              <Button className="w-full gap-2" onClick={() => initiateAction("SUBMIT")}>
+              <Button className="w-full gap-2" onClick={() => initiateAction("submit")}>
                 <Send className="w-4 h-4" />
                 Submit Application
               </Button>
@@ -108,106 +118,69 @@ export const WorkflowTransitionControl: React.FC<WorkflowTransitionControlProps>
                 </Button>
               </div>
             )}
-          </PermissionGuard>
-        );
+          </div>
+        )}
 
-      case ApplicationStatus.SUBMITTED:
-        return (
-          <PermissionGuard
-            permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
-            fallback={<p className="text-sm text-text-secondary italic text-center">Awaiting assignment to a reviewer.</p>}
+        {application.available_actions.includes("resubmit") && (
+          <Button className="w-full gap-2" onClick={() => initiateAction("resubmit")}>
+            <Send className="w-4 h-4" />
+            Resubmit Application
+          </Button>
+        )}
+
+        {application.available_actions.includes("start_review") && (
+          <Button className="w-full gap-2" onClick={() => initiateAction("start_review")}>
+            <Play className="w-4 h-4" />
+            Start Review
+          </Button>
+        )}
+
+        {application.available_actions.includes("complete_review") && (
+          <Button
+            className="w-full gap-2 bg-primary hover:bg-primary-dark"
+            onClick={() => initiateAction("complete_review")}
           >
-            <Button className="w-full gap-2" onClick={() => initiateAction("START_REVIEW")}>
-              <Play className="w-4 h-4" />
-              Start Review
-            </Button>
-          </PermissionGuard>
-        );
+            <ClipboardCheck className="w-4 h-4" />
+            Complete Review
+          </Button>
+        )}
 
-      case ApplicationStatus.UNDER_REVIEW:
-        return (
-          <PermissionGuard
-            permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
-            fallback={<p className="text-sm text-text-secondary italic text-center">Application is currently under review.</p>}
+        {application.available_actions.includes("request_info") && (
+          <Button
+            variant="outline"
+            className="w-full gap-2 border-amber-200 text-amber-700 hover:bg-amber-50"
+            onClick={() => initiateAction("request_info")}
           >
-            <div className="grid grid-cols-1 gap-2">
-              <Button
-                className="w-full gap-2 bg-primary hover:bg-primary-dark"
-                onClick={() => initiateAction("COMPLETE_REVIEW")}
-              >
-                <ClipboardCheck className="w-4 h-4" />
-                Complete Review
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full gap-2 border-amber-200 text-amber-700 hover:bg-amber-50"
-                onClick={() => initiateAction("REQUEST_INFO")}
-              >
-                <Info className="w-4 h-4" />
-                Request Information
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full gap-2 border-red-200 text-red-700 hover:bg-red-50"
-                onClick={() => initiateAction("REJECT")}
-              >
-                <XCircle className="w-4 h-4" />
-                Reject
-              </Button>
-            </div>
-          </PermissionGuard>
-        );
+            <Info className="w-4 h-4" />
+            Request Information
+          </Button>
+        )}
 
-      case ApplicationStatus.REVIEWED:
-        return (
-          <PermissionGuard
-            permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
-            fallback={<p className="text-sm text-text-secondary italic text-center">Review complete. Awaiting final decision.</p>}
+        {(application.status === ApplicationStatus.REVIEWED || application.available_actions.includes("approve")) && (
+          <Button
+            className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700"
+            onClick={() => initiateAction("approve")}
+            disabled={!application.available_actions.includes("approve") || isPending}
           >
-            <div className="grid grid-cols-1 gap-2">
-              <Button
-                className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => initiateAction("APPROVE")}
-              >
-                <CheckCircle className="w-4 h-4" />
-                Approve (Final Decision)
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full gap-2 border-red-200 text-red-700 hover:bg-red-50"
-                onClick={() => initiateAction("REJECT")}
-              >
-                <XCircle className="w-4 h-4" />
-                Reject
-              </Button>
-            </div>
-          </PermissionGuard>
-        );
+            <CheckCircle className="w-4 h-4" />
+            {application.approvals?.some(a => a.approved_by?.id === profile?.user?.id) 
+              ? "Already Approved" 
+              : "Approve (Final Decision)"}
+          </Button>
+        )}
 
-      case ApplicationStatus.INFORMATION_REQUESTED:
-        return (
-          <PermissionGuard
-            permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
-            fallback={
-              <p className="text-sm text-text-secondary italic text-center">
-                Additional information has been requested. Please upload the required documents and resubmit.
-              </p>
-            }
+        {application.available_actions.includes("reject") && (
+          <Button
+            variant="outline"
+            className="w-full gap-2 border-red-200 text-red-700 hover:bg-red-50"
+            onClick={() => initiateAction("reject")}
           >
-            <Button className="w-full gap-2" onClick={() => initiateAction("RESUBMIT")}>
-              <Send className="w-4 h-4" />
-              Resubmit Application
-            </Button>
-          </PermissionGuard>
-        );
-
-      default:
-        return (
-          <p className="text-sm text-text-secondary text-center italic">
-            No actions available for the current status.
-          </p>
-        );
-    }
+            <XCircle className="w-4 h-4" />
+            Reject
+          </Button>
+        )}
+      </div>
+    );
   };
 
   return (

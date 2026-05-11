@@ -50,7 +50,21 @@ export interface Application {
     first_name: string;
     last_name: string;
   };
-  approvals?: any[];
+  approvals?: ApplicationApproval[];
+  available_actions?: string[];
+}
+
+export interface ApplicationApproval {
+  id: string;
+  level_id: string;
+  approved_by: {
+    id: string;
+    fullname: string | null;
+    email: string;
+  };
+  approved_at: string;
+  notes?: string;
+  is_approved: boolean;
 }
 
 export interface ApplicationCreate {
