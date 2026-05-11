@@ -4,6 +4,7 @@ import {
   PaginatedResponse,
   Role,
   User,
+  UserInviteRequest,
   UserQueryParams,
   UserStatusUpdateRequest
 } from "../../types/access-control.types";
@@ -20,7 +21,7 @@ export const userApi = {
   },
 
   deleteUser: async (userId: string) => {
-    await client.delete(`/api/v1/users/${userId}`);
+    await client.delete(`/users/${userId}`);
   },
 
   setUserStatus: async (userId: string, data: UserStatusUpdateRequest) => {
@@ -40,6 +41,16 @@ export const userApi = {
 
   removeRoleFromUser: async (userId: string, roleId: string) => {
     const response = await client.delete<string>(`/users/${userId}/roles/${roleId}`);
+    return response.data;
+  },
+
+  inviteUser: async (data: UserInviteRequest) => {
+    const response = await client.post<{detail: string, user_id: string}>("/users/invite", data);
+    return response.data;
+  },
+
+  reInviteUser: async (userId: string) => {
+    const response = await client.post<{detail: string}>(`/users/${userId}/re-invite`);
     return response.data;
   },
 };

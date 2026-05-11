@@ -12,7 +12,7 @@ import { PermissionGuard } from "@/src/features/access-control/components/Permis
 import { PERMISSIONS } from "@/src/features/access-control/permissions";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Loader2, Send, CheckCircle, XCircle, Info, AlertCircle } from "lucide-react";
+import { Loader2, Send, CheckCircle, XCircle, Info, AlertCircle, Play, ClipboardCheck } from "lucide-react";
 import { ApplicationStatus, Application } from "../types/application.types";
 
 interface WorkflowTransitionControlProps {
@@ -112,25 +112,31 @@ export const WorkflowTransitionControl: React.FC<WorkflowTransitionControlProps>
         );
 
       case ApplicationStatus.SUBMITTED:
-      case ApplicationStatus.UNDER_REVIEW:
-      case ApplicationStatus.REVIEWED:
         return (
-          // Only reviewers/approvers with the transition permission can see these
           <PermissionGuard
             permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
-            fallback={
-              <p className="text-sm text-text-secondary italic text-center">
-                Awaiting review by an authorised officer.
-              </p>
-            }
+            fallback={<p className="text-sm text-text-secondary italic text-center">Awaiting assignment to a reviewer.</p>}
+          >
+            <Button className="w-full gap-2" onClick={() => initiateAction("START_REVIEW")}>
+              <Play className="w-4 h-4" />
+              Start Review
+            </Button>
+          </PermissionGuard>
+        );
+
+      case ApplicationStatus.UNDER_REVIEW:
+        return (
+          <PermissionGuard
+            permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
+            fallback={<p className="text-sm text-text-secondary italic text-center">Application is currently under review.</p>}
           >
             <div className="grid grid-cols-1 gap-2">
               <Button
-                className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => initiateAction("APPROVE")}
+                className="w-full gap-2 bg-primary hover:bg-primary-dark"
+                onClick={() => initiateAction("COMPLETE_REVIEW")}
               >
-                <CheckCircle className="w-4 h-4" />
-                Approve
+                <ClipboardCheck className="w-4 h-4" />
+                Complete Review
               </Button>
               <Button
                 variant="outline"
@@ -139,6 +145,32 @@ export const WorkflowTransitionControl: React.FC<WorkflowTransitionControlProps>
               >
                 <Info className="w-4 h-4" />
                 Request Information
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full gap-2 border-red-200 text-red-700 hover:bg-red-50"
+                onClick={() => initiateAction("REJECT")}
+              >
+                <XCircle className="w-4 h-4" />
+                Reject
+              </Button>
+            </div>
+          </PermissionGuard>
+        );
+
+      case ApplicationStatus.REVIEWED:
+        return (
+          <PermissionGuard
+            permissions={[PERMISSIONS.APPLICATION_TRANSITION, PERMISSIONS.APPLICATIONS_TRANSITION]}
+            fallback={<p className="text-sm text-text-secondary italic text-center">Review complete. Awaiting final decision.</p>}
+          >
+            <div className="grid grid-cols-1 gap-2">
+              <Button
+                className="w-full gap-2 bg-emerald-600 hover:bg-emerald-700"
+                onClick={() => initiateAction("APPROVE")}
+              >
+                <CheckCircle className="w-4 h-4" />
+                Approve (Final Decision)
               </Button>
               <Button
                 variant="outline"

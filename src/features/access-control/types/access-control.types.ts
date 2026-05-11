@@ -64,3 +64,9 @@ export interface UserQueryParams {
   user_role?: string;
   user_status?: boolean;
 }
+
+export interface UserInviteRequest {
+  email: string;
+  fullname: string;
+  role_id: string;
+}

@@ -15,9 +15,13 @@ import SearchBar from "@/src/design-system/components/TableComponent/SearchBar";
 import TableStatus from "@/src/design-system/components/TableComponent/TableStatus";
 import EntriesDisplay from "@/src/design-system/components/TableComponent/EntriesDisplay";
 import { Button } from "@/src/design-system";
-import { Shield, UserMinus, UserCheck, MoreVertical, Loader2 } from "lucide-react";
+import { Shield, UserMinus, UserCheck, MoreVertical, Loader2, Send, UserPlus } from "lucide-react";
 import { useModalStore } from "@/src/core/store/useModalStore";
 import { motion } from "framer-motion";
+import { usePermissions } from "../../hooks/use-permissions";
+import { PERMISSIONS } from "../../permissions";
+import { InviteUserModal } from "./InviteUserModal";
+import { useReInviteUser } from "../hooks/useUsers";
 
 export const UserTable: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -33,7 +37,9 @@ export const UserTable: React.FC = () => {
   });
 
   const { mutate: setStatusMutate, isPending: isSettingStatus, variables: statusVariables } = useSetUserStatus();
+  const { mutate: reInviteMutate, isPending: isReInviting, variables: reInviteVariables } = useReInviteUser();
   const { openModal } = useModalStore();
+  const { hasPermission } = usePermissions();
 
   const handleToggleStatus = (user: User) => {
     setStatusMutate({ userId: user.id, data: { is_active: !user.is_active } });
@@ -41,6 +47,14 @@ export const UserTable: React.FC = () => {
 
   const handleManageRoles = (user: User) => {
     openModal(<UserRoleManager userId={user.id} />, `Manage Roles: ${user.fullname}`, "md");
+  };
+  
+  const handleInviteUser = () => {
+    openModal(<InviteUserModal />, "Invite New Staff User", "md");
+  };
+
+  const handleReInvite = (user: User) => {
+    reInviteMutate(user.id);
   };
 
   const columns = useMemo<ColumnDef<User>[]>(
@@ -123,6 +137,21 @@ export const UserTable: React.FC = () => {
               <Button 
                 variant="outline" 
                 size="sm" 
+                className="h-8 px-3 gap-1.5 text-text-primary/70 hover:text-primary transition-all duration-300" 
+                onClick={() => handleReInvite(row.original)}
+                disabled={isReInviting && reInviteVariables === row.original.id}
+              >
+                {isReInviting && reInviteVariables === row.original.id ? (
+                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Send className="w-3.5 h-3.5" />
+                )}
+                <span className="text-[11px]">Resend Invite</span>
+              </Button>
+
+              <Button 
+                variant="outline" 
+                size="sm" 
                 className={`h-9 w-9 p-0 rounded-xl transition-all duration-500 relative overflow-hidden group border-border/60 ${
                   isActive 
                     ? "hover:bg-error/5 hover:border-error/30 text-error" 
@@ -162,7 +191,7 @@ export const UserTable: React.FC = () => {
         },
       },
     ],
-    [isSettingStatus, statusVariables]
+    [isSettingStatus, statusVariables, isReInviting, reInviteVariables]
   );
 
   const table = useReactTable({
@@ -184,11 +213,21 @@ export const UserTable: React.FC = () => {
               placeholder="Search users..."
             />
           </div>
-          <div className="shrink-0">
+          <div className="shrink-0 flex items-center gap-3">
              <EntriesDisplay
                 pageSize={pageSize}
                 onPageSizeChange={setPageSize}
               />
+              
+              {hasPermission(PERMISSIONS.USERS_CREATE) && (
+                <Button 
+                  onClick={handleInviteUser}
+                  className="gap-2 px-6 h-11"
+                >
+                  <UserPlus className="w-4.5 h-4.5" />
+                  <span>Invite User</span>
+                </Button>
+              )}
           </div>
         </div>
 

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { userApi } from "../api/user.api";
-import { UserQueryParams, UserStatusUpdateRequest, AssignRoleRequest } from "../../types/access-control.types";
+import { UserQueryParams, UserStatusUpdateRequest, AssignRoleRequest, UserInviteRequest } from "../../types/access-control.types";
 import { toast } from "sonner";
 
 export const useUsers = (params?: UserQueryParams) => {
@@ -64,5 +64,33 @@ export const useRemoveRoleFromUser = () => {
       queryClient.invalidateQueries({ queryKey: ["user-roles", userId] });
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
+  });
+};
+
+export const useInviteUser = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: UserInviteRequest) => userApi.inviteUser(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toast.success("User invited successfully");
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.detail || "Failed to invite user";
+      toast.error(message);
+    }
+  });
+};
+
+export const useReInviteUser = () => {
+  return useMutation({
+    mutationFn: (userId: string) => userApi.reInviteUser(userId),
+    onSuccess: () => {
+      toast.success("Invitation resent successfully");
+    },
+    onError: (error: any) => {
+      const message = error.response?.data?.detail || "Failed to resend invitation";
+      toast.error(message);
+    }
   });
 };
